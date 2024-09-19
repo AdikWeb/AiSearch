@@ -1,0 +1,8 @@
+Flask
+faiss-cpu
+numpy
+ollama
+pdfplumber
+python-docx
+openpyxl
+werkzeug

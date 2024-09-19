@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Индексикация и поиск</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"], input[type="submit"], input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .result {
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+        .result h4 {
+            margin: 0;
+        }
+        .result a {
+            color: #1e90ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Индексикация и поиск</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Загрузка для индексикации (TXT, PDF, DOCX, XLSX):</label>
+                <input type="file" id="file" name="file">
+            </div>
+            <input type="submit" value="Upload and Index">
+
+            <h3>Поиск</h3>
+            <div class="form-group">
+                <label for="query">Текст поиска:</label>
+                <input type="text" id="query" name="query" value="{{ query }}">
+            </div>
+            <div class="form-group">
+                <label for="top_k">Top K:</label>
+                <input type="number" id="top_k" name="top_k" value="{{ top_k }}" min="1" max="20" required>
+            </div>
+            <div class="form-group">
+                <label for="threshold">Threshold (0 to 1):</label>
+                <input type="number" id="threshold" name="threshold" value="{{ threshold }}" step="0.01" min="0" max="1" required>
+            </div>
+            <div class="form-group">
+                <label for="find_all">
+                    <input type="checkbox" id="find_all" name="find_all" {% if find_all %}checked{% endif %}>
+                    Искать все
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="keyword_filter">
+                    <input type="checkbox" id="keyword_filter" name="keyword_filter" {% if keyword_filter %}checked{% endif %}>
+                    Включить фильтр ключевых слов
+                </label>
+            </div>
+            <input type="submit" value="Search">
+        </form>
+
+        <div class="results">
+            {% if results %}
+                <h3>Результаты поиска:</h3>
+                {% for result in results %}
+                    <div class="result">
+                        <h4>{{ result['title'] }}</h4>
+                        <a href="{{ result['url'] }}" target="_blank">Ссылка</a>
+                        <p><strong>Текст:</strong> {{ result['context'] | safe }}</p>
+                        <p><strong>Дистанция:</strong> {{ result['distance'] }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Результатов не найдено.</p>
+            {% endif %}
+        </div>
+        
+    </div>
+</body>
+</html>
